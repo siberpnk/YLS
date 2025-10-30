@@ -11,7 +11,7 @@ using YourLocalShopMVC.Data;
 
 namespace YourLocalShopMVC.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(AccountsDbContext))]
     [Migration("20251029030418_Item")]
     partial class Item
     {
