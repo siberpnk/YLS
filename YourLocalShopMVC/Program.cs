@@ -4,15 +4,28 @@ using YourLocalShopMVC.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<YourLocalShopMVC.Data.ShopInventoryContext>(options =>
+    options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<YourLocalShopMVC.Data.AccountsDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddDefaultIdentity<IdentityUser>(
+    options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<YourLocalShopMVC.Data.AccountsDbContext>();
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("InventoryManagementRole",
+        policy => policy.RequireRole("Staff"));
+});
+
+builder.Services.AddAuthentication();
 
 var app = builder.Build();
 
@@ -37,7 +50,14 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Items}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "shopRoute",
+    pattern: "Items/AddToCart",
+    defaults: new {controller = "Shop", action = "AddToCart"});
+
 app.MapRazorPages();
+
 
 app.Run();
