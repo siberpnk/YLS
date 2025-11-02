@@ -12,8 +12,8 @@ using YourLocalShopMVC.Data;
 namespace YourLocalShopMVC.Migrations
 {
     [DbContext(typeof(ShopInventoryContext))]
-    [Migration("20251102082456_ShopInventory")]
-    partial class ShopInventory
+    [Migration("20251102093438_ShopData")]
+    partial class ShopData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,7 +100,8 @@ namespace YourLocalShopMVC.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
@@ -112,7 +113,8 @@ namespace YourLocalShopMVC.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("Stock")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Stock");
 
                     b.HasKey("Id");
 
@@ -132,7 +134,8 @@ namespace YourLocalShopMVC.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("DeliveryAddress")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("DeliveryAddress");
 
                     b.Property<string>("PurchaserId")
                         .HasColumnType("nvarchar(450)");
@@ -154,14 +157,17 @@ namespace YourLocalShopMVC.Migrations
 
                     b.Property<string>("CardHoldersName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CardHolderName");
 
                     b.Property<string>("CreditCardHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CreditCardHash");
 
                     b.Property<DateOnly>("ExpiryDate")
-                        .HasColumnType("date");
+                        .HasColumnType("date")
+                        .HasColumnName("ExpirayDate");
 
                     b.HasKey("Id");
 
@@ -176,8 +182,9 @@ namespace YourLocalShopMVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("TotalCost")
-                        .HasColumnType("float");
+                    b.Property<decimal>("TotalCost")
+                        .HasColumnType("decimal(18, 2)")
+                        .HasColumnName("TotalCost");
 
                     b.HasKey("Id");
 

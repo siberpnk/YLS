@@ -18,14 +18,16 @@ namespace YourLocalShopMVC.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> AddToCart(int id, [Bind("Id,Name,Price,Stock")] Item item)
+        public async Task<IActionResult> AddToCart(int id, Item item)
         {
             //var item = await _shopContext.Item.FindAsync(itemId);
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            user.Cart.Contents.Add(item);
-            _shopContext.Update(user.Cart);
-            await _userManager.UpdateAsync(user);
-            await _accountsContext.SaveChangesAsync();
+            //item.Name = "Smiths";
+            var _item = item;
+            user.Cart.Contents.Add(_item);
+            //_shopContext.Update(user.Cart);
+            //await _userManager.UpdateAsync(user);
+            //await _accountsContext.SaveChangesAsync();
             await _shopContext.SaveChangesAsync();
             return View(user.Cart.Contents);
         }

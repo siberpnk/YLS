@@ -12,18 +12,6 @@ namespace YourLocalShopMVC.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "OrderId",
-                table: "Item",
-                type: "int",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
-                name: "ShoppingCartId",
-                table: "Item",
-                type: "int",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
                 name: "CartId",
                 table: "AspNetUsers",
                 type: "int",
@@ -74,9 +62,9 @@ namespace YourLocalShopMVC.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CardHoldersName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CardHolderName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreditCardHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ExpiryDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    ExpirayDate = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,22 +77,39 @@ namespace YourLocalShopMVC.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TotalCost = table.Column<double>(type: "float", nullable: false)
+                    TotalCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ShoppingCart", x => x.Id);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Item_OrderId",
-                table: "Item",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Item_ShoppingCartId",
-                table: "Item",
-                column: "ShoppingCartId");
+            migrationBuilder.CreateTable(
+                name: "Item",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Stock = table.Column<int>(type: "int", nullable: true),
+                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    ShoppingCartId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Item", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Item_Order_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Order",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Item_ShoppingCart_ShoppingCartId",
+                        column: x => x.ShoppingCartId,
+                        principalTable: "ShoppingCart",
+                        principalColumn: "Id");
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_CartId",
@@ -115,6 +120,16 @@ namespace YourLocalShopMVC.Data.Migrations
                 name: "IX_AspNetUsers_PaymentDetailsId",
                 table: "AspNetUsers",
                 column: "PaymentDetailsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Item_OrderId",
+                table: "Item",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Item_ShoppingCartId",
+                table: "Item",
+                column: "ShoppingCartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_PurchaserId",
@@ -134,20 +149,6 @@ namespace YourLocalShopMVC.Data.Migrations
                 column: "CartId",
                 principalTable: "ShoppingCart",
                 principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Item_Order_OrderId",
-                table: "Item",
-                column: "OrderId",
-                principalTable: "Order",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Item_ShoppingCart_ShoppingCartId",
-                table: "Item",
-                column: "ShoppingCartId",
-                principalTable: "ShoppingCart",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />
@@ -161,30 +162,17 @@ namespace YourLocalShopMVC.Data.Migrations
                 name: "FK_AspNetUsers_ShoppingCart_CartId",
                 table: "AspNetUsers");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Item_Order_OrderId",
-                table: "Item");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Item_ShoppingCart_ShoppingCartId",
-                table: "Item");
-
             migrationBuilder.DropTable(
-                name: "Order");
+                name: "Item");
 
             migrationBuilder.DropTable(
                 name: "PaymentDetails");
 
             migrationBuilder.DropTable(
+                name: "Order");
+
+            migrationBuilder.DropTable(
                 name: "ShoppingCart");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Item_OrderId",
-                table: "Item");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Item_ShoppingCartId",
-                table: "Item");
 
             migrationBuilder.DropIndex(
                 name: "IX_AspNetUsers_CartId",
@@ -193,14 +181,6 @@ namespace YourLocalShopMVC.Data.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_AspNetUsers_PaymentDetailsId",
                 table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "OrderId",
-                table: "Item");
-
-            migrationBuilder.DropColumn(
-                name: "ShoppingCartId",
-                table: "Item");
 
             migrationBuilder.DropColumn(
                 name: "CartId",

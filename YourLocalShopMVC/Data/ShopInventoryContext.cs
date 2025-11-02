@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using YourLocalShopMVC.Models;
 
 namespace YourLocalShopMVC.Data
 {
@@ -13,6 +15,7 @@ namespace YourLocalShopMVC.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            var converter = new ValueConverter<IEnumerable<string>, string>(v => string.Join(";", v), v => v.Split(new[] { ';' }));
         }
 
         public DbSet<Models.Item> Item { get; set; } = default!;

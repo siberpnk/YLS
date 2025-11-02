@@ -12,9 +12,9 @@ namespace YourLocalShopMVC.Controllers
     public class AccountsController : Controller
     {
         private readonly AccountsDbContext _accountsContext;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<CustomerAccount> _userManager;
 
-        public AccountsController(AccountsDbContext accountsContext, UserManager<IdentityUser> userManager)
+        public AccountsController(AccountsDbContext accountsContext, UserManager<CustomerAccount> userManager)
         {
             _accountsContext = accountsContext;
             _userManager = userManager;

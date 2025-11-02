@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YourLocalShopMVC.Data;
 
@@ -11,9 +12,11 @@ using YourLocalShopMVC.Data;
 namespace YourLocalShopMVC.Migrations
 {
     [DbContext(typeof(ShopInventoryContext))]
-    partial class ShopInventoryContextModelSnapshot : ModelSnapshot
+    [Migration("20251102095721_ItemPermsUpdate1")]
+    partial class ItemPermsUpdate1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
