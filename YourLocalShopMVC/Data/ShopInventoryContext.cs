@@ -9,6 +9,15 @@ namespace YourLocalShopMVC.Data
             : base(options)
         {
         }
-        public DbSet<YourLocalShopMVC.Models.Item> Item { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
+
+        public DbSet<Models.Item> Item { get; set; } = default!;
+        public DbSet<Models.ShoppingCart> ShoppingCart { get; set; } = default!;
+        public DbSet<Models.Order> Order { get; set; } = default!;
+        public DbSet<Models.PaymentDetails> PaymentDetails { get; set; } = default!;
     }
 }
