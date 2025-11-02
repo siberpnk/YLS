@@ -6,7 +6,7 @@ namespace YourLocalShopMVC.Controllers
     {
         private readonly Data.ShopInventoryContext _context;
 
-        public IActionResult AddToCart()
+        public async Task<IActionResult> AddToCart(int itemId)
         {
             return View("Items");
         }
