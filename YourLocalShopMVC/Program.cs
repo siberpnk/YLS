@@ -1,22 +1,35 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using YourLocalShopMVC.Data;
+using YourLocalShopMVC.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<YourLocalShopMVC.Data.ShopInventoryContext>(options =>
+builder.Services.AddDbContext<ShopInventoryContext>(options =>
     options.UseSqlServer(connectionString));
-builder.Services.AddDbContext<YourLocalShopMVC.Data.AccountsDbContext>(options =>
+builder.Services.AddDbContext<AccountsDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(
     options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<YourLocalShopMVC.Data.AccountsDbContext>();
+    .AddUserManager<UserManager<IdentityUser>>()
+    .AddEntityFrameworkStores<AccountsDbContext>();
+
+builder.Services.AddIdentityCore<CustomerAccount>(
+    options => options.SignIn.RequireConfirmedAccount = true)
+    .AddSignInManager()
+    .AddRoles<IdentityRole>()
+    .AddUserManager<UserManager<CustomerAccount>>()
+    .AddEntityFrameworkStores<AccountsDbContext>()
+    .AddDefaultTokenProviders()
+    ;
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthorization(options =>

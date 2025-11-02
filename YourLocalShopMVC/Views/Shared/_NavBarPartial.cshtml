@@ -1,0 +1,20 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Staff"))
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="Accounts" asp-page="">Account Management</a>
+    </li>
+    <li class="nav-item">
+    </li>
+}
+else
+{
+    <li class="nav-item">
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="Items" asp-page="">Shopping Cart</a>
+    </li>
+}
