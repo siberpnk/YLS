@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YourLocalShopMVC.Data;
+using YourLocalShopMVC.Data.Inventory;
 
 #nullable disable
 
@@ -84,7 +85,7 @@ namespace YourLocalShopMVC.Migrations
 
                     b.HasIndex("PaymentDetailsId");
 
-                    b.ToTable("CustomerAccount");
+                    b.ToTable("CustomerAccount", (string)null);
                 });
 
             modelBuilder.Entity("YourLocalShopMVC.Models.Item", b =>
@@ -96,6 +97,7 @@ namespace YourLocalShopMVC.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");
 
@@ -118,7 +120,7 @@ namespace YourLocalShopMVC.Migrations
 
                     b.HasIndex("ShoppingCartId");
 
-                    b.ToTable("Item");
+                    b.ToTable("Item", (string)null);
                 });
 
             modelBuilder.Entity("YourLocalShopMVC.Models.Order", b =>
@@ -140,7 +142,7 @@ namespace YourLocalShopMVC.Migrations
 
                     b.HasIndex("PurchaserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Order", (string)null);
                 });
 
             modelBuilder.Entity("YourLocalShopMVC.Models.PaymentDetails", b =>
@@ -167,7 +169,7 @@ namespace YourLocalShopMVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentDetails");
+                    b.ToTable("PaymentDetails", (string)null);
                 });
 
             modelBuilder.Entity("YourLocalShopMVC.Models.ShoppingCart", b =>
@@ -184,7 +186,7 @@ namespace YourLocalShopMVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShoppingCart");
+                    b.ToTable("ShoppingCart", (string)null);
                 });
 
             modelBuilder.Entity("YourLocalShopMVC.Models.CustomerAccount", b =>

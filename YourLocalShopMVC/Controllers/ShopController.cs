@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using YourLocalShopMVC.Models;
 using YourLocalShopMVC.Data;
+using YourLocalShopMVC.Data.Accounts;
+using YourLocalShopMVC.Data.Inventory;
 
 namespace YourLocalShopMVC.Controllers
 {

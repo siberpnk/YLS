@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YourLocalShopMVC.Models;
 
-namespace YourLocalShopMVC.Data.Inventory
+namespace YourLocalShopMVC.Data.Shop
 {
 
     public class ShopInventoryContext : DbContext

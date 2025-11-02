@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using YourLocalShopMVC.Data;
+using YourLocalShopMVC.Data.Accounts;
 
 namespace YourLocalShopMVC.Data.Migrations
 {

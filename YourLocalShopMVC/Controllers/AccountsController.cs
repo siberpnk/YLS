@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using YourLocalShopMVC.Data;
+using YourLocalShopMVC.Data.Accounts;
 using YourLocalShopMVC.Models;
 
 namespace YourLocalShopMVC.Controllers

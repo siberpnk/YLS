@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using YourLocalShopMVC.Data;
+using YourLocalShopMVC.Data.Inventory;
 using YourLocalShopMVC.Models;
 
 namespace YourLocalShopMVC.Controllers
@@ -16,9 +16,9 @@ namespace YourLocalShopMVC.Controllers
     [Authorize(Roles = "Staff")]
     public class ItemsController : Controller
     {
-        private readonly Data.ShopInventoryContext _context;
+        private readonly ShopInventoryContext _context;
 
-        public ItemsController(Data.ShopInventoryContext context)
+        public ItemsController(ShopInventoryContext context)
         {
             _context = context;
         }

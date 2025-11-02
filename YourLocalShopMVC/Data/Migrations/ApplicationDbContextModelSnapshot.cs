@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YourLocalShopMVC.Data;
+using YourLocalShopMVC.Data.Accounts;
 
 #nullable disable
 
@@ -17,7 +18,7 @@ namespace YourLocalShopMVC.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.21")
+                .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -86,11 +87,6 @@ namespace YourLocalShopMVC.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -142,10 +138,6 @@ namespace YourLocalShopMVC.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator().HasValue("IdentityUser");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -233,134 +225,6 @@ namespace YourLocalShopMVC.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("YourLocalShopMVC.Models.Item", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Name");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<int?>("ShoppingCartId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Stock")
-                        .HasColumnType("int")
-                        .HasColumnName("Stock");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ShoppingCartId");
-
-                    b.ToTable("Item");
-                });
-
-            modelBuilder.Entity("YourLocalShopMVC.Models.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DeliveryAddress")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("DeliveryAddress");
-
-                    b.Property<string>("PurchaserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PurchaserId");
-
-                    b.ToTable("Order");
-                });
-
-            modelBuilder.Entity("YourLocalShopMVC.Models.PaymentDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CardHoldersName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CardHolderName");
-
-                    b.Property<string>("CreditCardHash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CreditCardHash");
-
-                    b.Property<DateOnly>("ExpiryDate")
-                        .HasColumnType("date")
-                        .HasColumnName("ExpirayDate");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PaymentDetails");
-                });
-
-            modelBuilder.Entity("YourLocalShopMVC.Models.ShoppingCart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("TotalCost")
-                        .HasColumnType("decimal(18, 2)")
-                        .HasColumnName("TotalCost");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ShoppingCart");
-                });
-
-            modelBuilder.Entity("YourLocalShopMVC.Models.CustomerAccount", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<int?>("CartId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DeliveryAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PaymentDetailsId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("CartId");
-
-                    b.HasIndex("PaymentDetailsId");
-
-                    b.HasDiscriminator().HasValue("CustomerAccount");
-                });
-
-            modelBuilder.Entity("YourLocalShopMVC.Models.StaffAccount", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.HasDiscriminator().HasValue("StaffAccount");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -410,56 +274,6 @@ namespace YourLocalShopMVC.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("YourLocalShopMVC.Models.Item", b =>
-                {
-                    b.HasOne("YourLocalShopMVC.Models.Order", null)
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId");
-
-                    b.HasOne("YourLocalShopMVC.Models.ShoppingCart", null)
-                        .WithMany("Contents")
-                        .HasForeignKey("ShoppingCartId");
-                });
-
-            modelBuilder.Entity("YourLocalShopMVC.Models.Order", b =>
-                {
-                    b.HasOne("YourLocalShopMVC.Models.CustomerAccount", "Purchaser")
-                        .WithMany("Orders")
-                        .HasForeignKey("PurchaserId");
-
-                    b.Navigation("Purchaser");
-                });
-
-            modelBuilder.Entity("YourLocalShopMVC.Models.CustomerAccount", b =>
-                {
-                    b.HasOne("YourLocalShopMVC.Models.ShoppingCart", "Cart")
-                        .WithMany()
-                        .HasForeignKey("CartId");
-
-                    b.HasOne("YourLocalShopMVC.Models.PaymentDetails", "PaymentDetails")
-                        .WithMany()
-                        .HasForeignKey("PaymentDetailsId");
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("PaymentDetails");
-                });
-
-            modelBuilder.Entity("YourLocalShopMVC.Models.Order", b =>
-                {
-                    b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("YourLocalShopMVC.Models.ShoppingCart", b =>
-                {
-                    b.Navigation("Contents");
-                });
-
-            modelBuilder.Entity("YourLocalShopMVC.Models.CustomerAccount", b =>
-                {
-                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }
