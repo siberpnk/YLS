@@ -7,13 +7,11 @@ namespace YourLocalShopMVC.Models
     {
         public int Id { get; set; }
         
-        [Column("Name")]
         public string? Name { get; set; }
         
         [DataType(DataType.Currency), Column(TypeName = "decimal(18, 2)")]
         public required decimal Price { set; get; }
         
-        [Column("Stock")]
         public int? Stock { set; get; } 
     }
 }

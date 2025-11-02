@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using YourLocalShopMVC.Models;
 using YourLocalShopMVC.Data;
 using YourLocalShopMVC.Data.Accounts;
-using YourLocalShopMVC.Data.Inventory;
+using YourLocalShopMVC.DataInventory;
 
 namespace YourLocalShopMVC.Controllers
 {

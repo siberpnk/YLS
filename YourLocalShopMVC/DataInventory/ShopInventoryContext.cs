@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YourLocalShopMVC.Models;
 
-namespace YourLocalShopMVC.Data.Inventory
+namespace YourLocalShopMVC.DataInventory
 {
 
     public class ShopInventoryContext : DbContext
@@ -18,9 +18,9 @@ namespace YourLocalShopMVC.Data.Inventory
             var converter = new ValueConverter<IEnumerable<string>, string>(v => string.Join(";", v), v => v.Split(new[] { ';' }));
         }
 
-        public DbSet<Models.Item> Item { get; set; } = default!;
-        public DbSet<Models.ShoppingCart> ShoppingCart { get; set; } = default!;
-        public DbSet<Models.Order> Order { get; set; } = default!;
-        public DbSet<Models.PaymentDetails> PaymentDetails { get; set; } = default!;
+        public DbSet<Item> Item { get; set; } = default!;
+        public DbSet<ShoppingCart> ShoppingCart { get; set; } = default!;
+        public DbSet<Order> Order { get; set; } = default!;
+        public DbSet<PaymentDetails> PaymentDetails { get; set; } = default!;
     }
 }

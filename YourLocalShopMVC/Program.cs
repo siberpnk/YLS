@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using YourLocalShopMVC.Data;
 using YourLocalShopMVC.Data.Accounts;
-using YourLocalShopMVC.Data.Inventory;
+using YourLocalShopMVC.DataInventory;
 using YourLocalShopMVC.Models;
 
 var builder = WebApplication.CreateBuilder(args);
