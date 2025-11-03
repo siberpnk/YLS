@@ -7,6 +7,7 @@ namespace YourLocalShopMVC.Models
         public int Id { get; set; }
 
         [NotMapped]
+        //TODO: Change to Dictionary
         public List<Item> OrderedItems { get; set; }
 
         [NotMapped]

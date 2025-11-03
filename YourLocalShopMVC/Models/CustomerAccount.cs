@@ -18,18 +18,17 @@ namespace YourLocalShopMVC.Models
         [NotMapped]
         public List<Order> Orders { get; set; }
 
-        [ForeignKey ("ShoppingCart")]
         [Column ("UserCartId")]
         public int? CartId { get; set; }
 
-        [NotMapped]
-        public ShoppingCart? Cart { get; set; }
+        //[NotMapped]
+        //public ShoppingCart? Cart { get; set; }
 
         public CustomerAccount()
         {
             OrderIds = new List<int>();
             Orders = new List<Order>();
-            Cart = new ShoppingCart();
+            //Cart = new ShoppingCart();
         }
     }
 }
