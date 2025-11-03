@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using YourLocalShopMVC.Data;
+using YourLocalShopMVC.Data.Accounts;
 
 #nullable disable
 
-namespace YourLocalShopMVC.Data.Migrations
+namespace YourLocalShopMVC.Migrations
 {
     [DbContext(typeof(AccountsDbContext))]
-    [Migration("20251029030418_Item")]
-    partial class Item
+    partial class AccountsDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,6 +86,11 @@ namespace YourLocalShopMVC.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -140,6 +142,10 @@ namespace YourLocalShopMVC.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator().HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -227,7 +233,7 @@ namespace YourLocalShopMVC.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("YourLocalShopMVC.Models.Item", b =>
+            modelBuilder.Entity("YourLocalShopMVC.Models.PaymentDetails", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -235,19 +241,53 @@ namespace YourLocalShopMVC.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("CardHoldersName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CardHolderName");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 2)");
+                    b.Property<string>("CreditCardHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CreditCardHash");
 
-                    b.Property<int?>("Stock")
-                        .HasColumnType("int");
+                    b.Property<DateOnly>("ExpiryDate")
+                        .HasColumnType("date")
+                        .HasColumnName("ExpirayDate");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Item");
+                    b.ToTable("PaymentDetails");
+                });
+
+            modelBuilder.Entity("YourLocalShopMVC.Models.CustomerAccount", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<int?>("CartId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserCartId");
+
+                    b.Property<string>("DeliveryAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderIds")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UserOrder");
+
+                    b.Property<int?>("PaymentDetailsId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("PaymentDetailsId");
+
+                    b.HasDiscriminator().HasValue("CustomerAccount");
+                });
+
+            modelBuilder.Entity("YourLocalShopMVC.Models.StaffAccount", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.HasDiscriminator().HasValue("StaffAccount");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -299,6 +339,15 @@ namespace YourLocalShopMVC.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("YourLocalShopMVC.Models.CustomerAccount", b =>
+                {
+                    b.HasOne("YourLocalShopMVC.Models.PaymentDetails", "PaymentDetails")
+                        .WithMany()
+                        .HasForeignKey("PaymentDetailsId");
+
+                    b.Navigation("PaymentDetails");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,54 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model YourLocalShopMVC.Models.ShoppingCart
+@inject SignInManager<CustomerAccount> SignInManager
+@inject RoleManager<IdentityRole> RoleManager
+@inject UserManager<CustomerAccount> UserManager
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<h1>Shopping Cart</h1>
+
+<p>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <a asp-action="CheckOut">Check Out</a>
+    }
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemKeys)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemKeys)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemKeys)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ItemKeys)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.ItemKeys.Count)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.ItemKeys)
+                </td>
+                <td>
+                    <h1>Remove</h1>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

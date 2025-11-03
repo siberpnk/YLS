@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using YourLocalShopMVC.Data;
+using YourLocalShopMVC.Data.Accounts;
 using YourLocalShopMVC.Models;
 
 namespace YourLocalShopMVC.Controllers
@@ -12,9 +13,9 @@ namespace YourLocalShopMVC.Controllers
     public class AccountsController : Controller
     {
         private readonly AccountsDbContext _accountsContext;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<CustomerAccount> _userManager;
 
-        public AccountsController(AccountsDbContext accountsContext, UserManager<IdentityUser> userManager)
+        public AccountsController(AccountsDbContext accountsContext, UserManager<CustomerAccount> userManager)
         {
             _accountsContext = accountsContext;
             _userManager = userManager;
@@ -39,7 +40,7 @@ namespace YourLocalShopMVC.Controllers
                 await _userManager.AddToRoleAsync(user, "Staff");
                 await _userManager.UpdateAsync(user);
                 _accountsContext.SaveChanges();
-                return View(_accountsContext);
+                return View(user);
             }
 
             return NotFound(user);
