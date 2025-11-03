@@ -257,7 +257,7 @@ namespace YourLocalShopMVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentDetails");
+                    b.ToTable("PaymentDetails", (string)null);
                 });
 
             modelBuilder.Entity("YourLocalShopMVC.Models.CustomerAccount", b =>

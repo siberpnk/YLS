@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using YourLocalShopMVC.Models;
-using YourLocalShopMVC.Data;
 using YourLocalShopMVC.Data.Accounts;
 using YourLocalShopMVC.DataInventory;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace YourLocalShopMVC.Controllers
 {
@@ -20,26 +21,86 @@ namespace YourLocalShopMVC.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> AddToCart(int id)
+        private async Task<ShoppingCart?> FindCart()
         {
-           //cart relates to a found user through Find(userId) in _shopContext 
-            var cart = _shopContext.Find<ShoppingCart>(_userManager.GetUserAsync(HttpContext.User).Result.CartId);
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            ShoppingCart cart;
+
+            if (user == null)
+            {
+                return null;
+            }
+
             if (ModelState.IsValid)
             {
-                cart.ItemKeys.Add(id);
 
-                if (user != null)
+                //if user has an associated cart dig up cart by its primary key
+                if (user.CartId != null)
                 {
-                    await _userManager.UpdateAsync(user);
+                    //reseed contents based on CartId
+                    cart = _shopContext.Find<ShoppingCart>(user.CartId);
+                    foreach (int itemId in cart.ItemKeys)
+                    {
+                        cart.AddToContents(await _shopContext.Item.FindAsync(itemId));
+                    }
                 }
-                await _accountsContext.SaveChangesAsync();
+                else
+                {
+                    cart = new ShoppingCart();
+                    _shopContext.Add(cart);
+                    await _shopContext.SaveChangesAsync();
+                }
+                return cart;
+            }
+            return null;
+        }
 
+        public async Task<IActionResult> AddToCart(int id)
+        {
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if(user == null)
+            {
+                return NotFound(user);
+            }
+
+            if (ModelState.IsValid)
+            {
+                ShoppingCart cart;
+
+                //if user has an associated cart dig up cart by its primary key
+                if (user.CartId != null)
+                {
+                    //reseed contents
+                    cart = _shopContext.Find<ShoppingCart>(user.CartId);
+                    foreach(int itemId in cart.ItemKeys)
+                    {
+                        cart.AddToContents(await _shopContext.Item.FindAsync(itemId));
+                    }
+                }
+                //else create an empty cart
+                else
+                {
+                    cart = new ShoppingCart();
+                    _shopContext.Add(cart);
+                    await _shopContext.SaveChangesAsync();
+                }
+
+                //add item by it's key to the cart
+                cart.AddItem(_shopContext.Find<Item>(id));
+                //cart.CalculateTotal();
+
+                //update shop context then sane the changes.
+                _shopContext.Update(cart);
+                await _shopContext.SaveChangesAsync();
+
+                user.CartId = cart.Id;
+                //update the user account and commit the change to the database
                 _accountsContext.Update(user);
                 await _accountsContext.SaveChangesAsync();
-                _shopContext.Add(cart);
-                await _shopContext.SaveChangesAsync();
-                return View(_accountsContext);
+
+                return RedirectToAction(nameof(ViewCart));
             }
             return View();
         }
@@ -47,18 +108,63 @@ namespace YourLocalShopMVC.Controllers
         public async Task<IActionResult> ViewCart()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            ShoppingCart cart = new ShoppingCart();
-            if(user != null)
+
+            if(user == null)
             {
-                cart = _shopContext.Find<ShoppingCart>(user.CartId);
-                user.Cart = cart;
-            }
-            if(user != null && user.Cart != null)
-            {
-                return View(user.Cart);
+                return NotFound(user);
             }
 
-            return View(cart);
+            if (user.CartId != null)
+            {
+                //reseed contents
+                var cart = _shopContext.Find<ShoppingCart>(user.CartId);
+                foreach (int itemId in cart.ItemKeys)
+                {
+                    cart.AddToContents(await _shopContext.Item.FindAsync(itemId));
+                }
+
+                return View(cart);
+            }
+
+            return View();
+        }
+
+        public async Task<IActionResult> RemoveItem(int id)
+        {
+            var cart = await FindCart();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if(cart == null)
+            {
+                NotFound(cart);
+            }
+            cart.RemoveItem(_shopContext.Find<Item>(id));
+
+            _shopContext.Update(cart);
+            await _shopContext.SaveChangesAsync();
+
+
+            return RedirectToAction(nameof(ViewCart));
+        }
+
+        public async Task<IActionResult> Checkout(int id)
+        {
+            var cart = await FindCart();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if(cart == null)
+            {
+                return NotFound(cart);
+            }
+
+            if(user == null)
+            {
+                return NotFound(user);
+            }
+
+
+
+            return View();
         }
     }
 }
