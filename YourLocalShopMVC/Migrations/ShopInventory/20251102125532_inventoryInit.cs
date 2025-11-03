@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace YourLocalShopMVC.Migrations
+namespace YourLocalShopMVC.Migrations.ShopInventory
 {
     /// <inheritdoc />
     public partial class inventoryInit : Migration

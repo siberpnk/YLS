@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YourLocalShopMVC.DataInventory;
 
 #nullable disable
 
-namespace YourLocalShopMVC.Migrations
+namespace YourLocalShopMVC.Migrations.ShopInventory
 {
     [DbContext(typeof(ShopInventoryContext))]
-    [Migration("20251102125052_updateItemLabels")]
-    partial class updateItemLabels
+    partial class ShopInventoryContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -20,24 +20,45 @@ namespace YourLocalShopMVC.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> AddToCart(int id, Item item)
+        public async Task<IActionResult> AddToCart(int id)
         {
-            //var item = await _shopContext.Item.FindAsync(itemId);
+           //cart relates to a found user through Find(userId) in _shopContext 
+            var cart = _shopContext.Find<ShoppingCart>(_userManager.GetUserAsync(HttpContext.User).Result.CartId);
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            //item.Name = "Smiths";
-            var _item = item;
-            user.Cart.Contents.Add(_item);
-            //_shopContext.Update(user.Cart);
-            //await _userManager.UpdateAsync(user);
-            //await _accountsContext.SaveChangesAsync();
-            await _shopContext.SaveChangesAsync();
-            return View(user.Cart.Contents);
+            if (ModelState.IsValid)
+            {
+                cart.ItemKeys.Add(id);
+
+                if (user != null)
+                {
+                    await _userManager.UpdateAsync(user);
+                }
+                await _accountsContext.SaveChangesAsync();
+
+                _accountsContext.Update(user);
+                await _accountsContext.SaveChangesAsync();
+                _shopContext.Add(cart);
+                await _shopContext.SaveChangesAsync();
+                return View(_accountsContext);
+            }
+            return View();
         }
 
         public async Task<IActionResult> ViewCart()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            return View(user.Cart.Contents);
+            ShoppingCart cart = new ShoppingCart();
+            if(user != null)
+            {
+                cart = _shopContext.Find<ShoppingCart>(user.CartId);
+                user.Cart = cart;
+            }
+            if(user != null && user.Cart != null)
+            {
+                return View(user.Cart);
+            }
+
+            return View(cart);
         }
     }
 }

@@ -9,11 +9,11 @@ using YourLocalShopMVC.Data.Accounts;
 
 #nullable disable
 
-namespace YourLocalShopMVC.Data.Migrations
+namespace YourLocalShopMVC.Migrations
 {
     [DbContext(typeof(AccountsDbContext))]
-    [Migration("20251102124638_accountInit")]
-    partial class accountInit
+    [Migration("20251102125320_accountsInit")]
+    partial class accountsInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using YourLocalShopMVC.Controllers;
 
 namespace YourLocalShopMVC.Models
 {
@@ -11,7 +12,7 @@ namespace YourLocalShopMVC.Models
         [NotMapped]
         public List<Item> Contents { get; set; }
 
-        [Column ("ItemKeys")]
+        [Column("ItemKeys")]
         public List<int>? ItemKeys { get; set; }
       
         [DataType(DataType.Currency), Column(name: "TotalCost", TypeName = "decimal(18, 2)")]
@@ -23,9 +24,11 @@ namespace YourLocalShopMVC.Models
             Contents = new List<Item>();
         }
 
-        public void Dto(int i)
+        public ShoppingCart(List<int> itemKeys)
         {
-            //Contents.Add(null);
+            ItemKeys = itemKeys;
+            Contents = new List<Item>();
         }
+
     }
 }

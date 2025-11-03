@@ -15,7 +15,6 @@ namespace YourLocalShopMVC.DataInventory
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            var converter = new ValueConverter<IEnumerable<string>, string>(v => string.Join(";", v), v => v.Split(new[] { ';' }));
         }
 
         public DbSet<Item> Item { get; set; } = default!;

@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@model IEnumerable<YourLocalShopMVC.Models.Item>
+@model YourLocalShopMVC.Models.ShoppingCart
 @inject SignInManager<CustomerAccount> SignInManager
 @inject RoleManager<IdentityRole> RoleManager
 @inject UserManager<CustomerAccount> UserManager
@@ -20,33 +20,35 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.ItemKeys)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.ItemKeys)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Stock)
+                @Html.DisplayNameFor(model => model.ItemKeys)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Stock)
-            </td>
-            <td>
-                <h1>Remove</h1>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.ItemKeys)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.ItemKeys.Count)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.ItemKeys)
+                </td>
+                <td>
+                    <h1>Remove</h1>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+

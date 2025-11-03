@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Policy;
+using YourLocalShopMVC.DataInventory;
 
 namespace YourLocalShopMVC.Models
 {
@@ -16,7 +17,8 @@ namespace YourLocalShopMVC.Models
 
         [NotMapped]
         public List<Order> Orders { get; set; }
-        
+
+        [ForeignKey ("ShoppingCart")]
         [Column ("UserCartId")]
         public int? CartId { get; set; }
 

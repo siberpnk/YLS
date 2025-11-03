@@ -9,10 +9,10 @@ using YourLocalShopMVC.DataInventory;
 
 #nullable disable
 
-namespace YourLocalShopMVC.Migrations
+namespace YourLocalShopMVC.Migrations.ShopInventory
 {
     [DbContext(typeof(ShopInventoryContext))]
-    [Migration("20251102124612_inventoryInit")]
+    [Migration("20251102125532_inventoryInit")]
     partial class inventoryInit
     {
         /// <inheritdoc />
@@ -34,13 +34,15 @@ namespace YourLocalShopMVC.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<int?>("Stock")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Stock");
 
                     b.HasKey("Id");
 

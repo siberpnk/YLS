@@ -40,7 +40,7 @@ namespace YourLocalShopMVC.Controllers
                 await _userManager.AddToRoleAsync(user, "Staff");
                 await _userManager.UpdateAsync(user);
                 _accountsContext.SaveChanges();
-                return View(_accountsContext);
+                return View(user);
             }
 
             return NotFound(user);

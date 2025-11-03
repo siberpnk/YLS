@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace YourLocalShopMVC.Data.Migrations
+namespace YourLocalShopMVC.Migrations
 {
     /// <inheritdoc />
-    public partial class accountInit : Migration
+    public partial class accountsInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
