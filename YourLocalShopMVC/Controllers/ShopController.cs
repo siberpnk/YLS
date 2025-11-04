@@ -5,6 +5,7 @@ using YourLocalShopMVC.Data.Accounts;
 using YourLocalShopMVC.DataInventory;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Policy;
 
 namespace YourLocalShopMVC.Controllers
 {
@@ -147,23 +148,34 @@ namespace YourLocalShopMVC.Controllers
             return RedirectToAction(nameof(ViewCart));
         }
 
-        public async Task<IActionResult> Checkout(int id)
+        public async Task<IActionResult> Checkout()
         {
-            var cart = await FindCart();
-            var user = await _userManager.GetUserAsync(HttpContext.User);
+            return View();
+        }
 
-            if(cart == null)
+        [HttpPost]
+        public async Task<IActionResult> Checkout(CustomerAccount customer)
+        {
+            if(ModelState.IsValid)
             {
-                return NotFound(cart);
+                var cart = await FindCart();
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                customer.PaymentDetails.CreateCreditCardHash();
+
+
+                if(cart == null)
+                {
+                    return NotFound(cart);
+                }
+
+                if(user == null)
+                {
+                    return NotFound(user);
+                }
+
+                _accountsContext.Update(customer);
+                await _accountsContext.SaveChangesAsync();
             }
-
-            if(user == null)
-            {
-                return NotFound(user);
-            }
-
-
-
             return View();
         }
     }

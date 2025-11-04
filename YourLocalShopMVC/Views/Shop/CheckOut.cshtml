@@ -16,15 +16,26 @@
         <form asp-action="Checkout">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
+                <label asp-for="PaymentDetails.CardHoldersName" class="control-label"></label>
+                <input asp-for="PaymentDetails.CardHoldersName" class="form-control" />
+                <span asp-validation-for="PaymentDetails.CardHoldersName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PaymentDetails" class="control-label"></label>
-                <input asp-for="PaymentDetails" class="form-control" />
-                <span asp-validation-for="PaymentDetails" class="text-danger"></span>
+                <label asp-for="PaymentDetails.CardNumber" class="control-label"></label>
+                <input asp-for="PaymentDetails.CardNumber" class="form-control" />
+                <span asp-validation-for="PaymentDetails.CardNumber" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="PaymentDetails.ExpiryDate" class="control-label"></label>
+                <input asp-for="PaymentDetails.ExpiryDate" class="form-control" />
+                <span asp-validation-for="PaymentDetails.ExpiryDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentDetails.CVC" class="control-label"></label>
+                <input asp-for="PaymentDetails.CVC" class="form-control" />
+                <span asp-validation-for="PaymentDetails.CVC" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <label asp-for="DeliveryAddress" class="control-label"></label>
                 <input asp-for="DeliveryAddress" class="form-control" />
@@ -35,10 +46,6 @@
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

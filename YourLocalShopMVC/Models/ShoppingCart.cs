@@ -56,13 +56,5 @@ namespace YourLocalShopMVC.Models
 
             AddToContents(item);
         }
-
-        public void SeedContents(ShoppingCart cartOther)
-        {
-            if(this != cartOther)
-            {
-
-            }
-        }
     }
 }
