@@ -20,6 +20,8 @@ namespace YourLocalShopMVC.Controllers
             _accountsContext = accountsContext;
             _shopContext = shopContext;
             _userManager = userManager;
+
+            _accountsContext.CustomerAccount.Include(c => c.PaymentDetails);
         }
 
         private async Task<ShoppingCart?> FindCart()
@@ -54,6 +56,11 @@ namespace YourLocalShopMVC.Controllers
                 return cart;
             }
             return null;
+        }
+
+        private async Task<CustomerAccount?> GetCurrentUser()
+        {
+                return await _userManager.GetUserAsync(HttpContext.User);
         }
 
         public async Task<IActionResult> AddToCart(int id)
@@ -148,14 +155,19 @@ namespace YourLocalShopMVC.Controllers
             return RedirectToAction(nameof(ViewCart));
         }
 
-        public async Task<IActionResult> Checkout()
+        public async Task<IActionResult> Payment()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Checkout(CustomerAccount customer)
+        public async Task<IActionResult> Payment(CustomerAccount customer)
         {
+            if(customer == null)
+            {
+                return NotFound(customer);
+            }
+
             if(ModelState.IsValid)
             {
                 var cart = await FindCart();
@@ -173,9 +185,30 @@ namespace YourLocalShopMVC.Controllers
                     return NotFound(user);
                 }
 
-                _accountsContext.Update(customer);
+                user.PaymentDetails = customer.PaymentDetails;
+
+                _accountsContext.Update(user);
                 await _accountsContext.SaveChangesAsync();
+                return RedirectToAction(nameof(Checkout));
             }
+            return View(customer);
+        }
+
+        public async Task<IActionResult> Checkout()
+        {
+            var cart = await FindCart();
+            return View(cart);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Checkout(ShoppingCart cart)
+        {
+            if(cart == null)
+            {
+                NotFound(cart);
+            }
+
+
             return View();
         }
     }

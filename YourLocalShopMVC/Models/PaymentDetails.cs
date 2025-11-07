@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
+using YourLocalShopMVC.Validation;
 
 namespace YourLocalShopMVC.Models
 {
@@ -13,7 +14,7 @@ namespace YourLocalShopMVC.Models
         public int Id { get; set; }
        
         [Column ("CardHolderName")]
-        [Required]
+        [NotRequiredIf(nameof(CreditCardHash))]
         [Display (Name = "Card Holder Name")]
         public required string CardHoldersName { get; set; }
       

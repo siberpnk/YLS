@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@model YourLocalShopMVC.Models.CustomerAccount
+@model YourLocalShopMVC.Models.ShoppingCart
 @inject SignInManager<CustomerAccount> SignInManager
 @inject RoleManager<IdentityRole> RoleManager
 @inject UserManager<CustomerAccount> UserManager
@@ -8,46 +8,45 @@
     ViewData["Title"] = "Checkout";
 }
 
-<h1>Checkout</h1>
+<h1>Shopping Cart, Total Cost: $ @Model.TotalCost</h1>
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Checkout">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="PaymentDetails.CardHoldersName" class="control-label"></label>
-                <input asp-for="PaymentDetails.CardHoldersName" class="form-control" />
-                <span asp-validation-for="PaymentDetails.CardHoldersName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PaymentDetails.CardNumber" class="control-label"></label>
-                <input asp-for="PaymentDetails.CardNumber" class="form-control" />
-                <span asp-validation-for="PaymentDetails.CardNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PaymentDetails.ExpiryDate" class="control-label"></label>
-                <input asp-for="PaymentDetails.ExpiryDate" class="form-control" />
-                <span asp-validation-for="PaymentDetails.ExpiryDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PaymentDetails.CVC" class="control-label"></label>
-                <input asp-for="PaymentDetails.CVC" class="form-control" />
-                <span asp-validation-for="PaymentDetails.CVC" class="text-danger"></span>
-            </div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Contents.Keys.First().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contents.Keys.First().Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contents.Keys.Count)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Contents.Keys)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.Contents[item])
+                </td>
+                <td>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-controller="Shop" asp-action="Checkout" asp-route-id="">Commit to purchase</a>
 
-            <div class="form-group">
-                <label asp-for="DeliveryAddress" class="control-label"></label>
-                <input asp-for="DeliveryAddress" class="form-control" />
-                <span asp-validation-for="DeliveryAddress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Purchase" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
