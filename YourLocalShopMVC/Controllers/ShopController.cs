@@ -6,6 +6,7 @@ using YourLocalShopMVC.DataInventory;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Policy;
+using System.ComponentModel.DataAnnotations;
 
 namespace YourLocalShopMVC.Controllers
 {
@@ -201,15 +202,31 @@ namespace YourLocalShopMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Checkout(ShoppingCart cart)
+        public async Task<IActionResult> Order(ShoppingCart cart)
         {
             if(cart == null)
             {
                 NotFound(cart);
             }
+            if (ModelState.IsValid)
+            {
 
+                var user = await GetCurrentUser();
+                var order = new Order();
+                order.BuildOrder(user, cart);
+                cart = new ShoppingCart();
+                user.CartId = cart.Id;
 
-            return View();
+                _accountsContext.Update(user);
+                _shopContext.Update(cart);
+                _shopContext.Add(order);
+
+                _accountsContext.SaveChanges();
+                _shopContext.SaveChanges();
+
+                return View();
+            }
+            return RedirectToAction(nameof(Checkout),cart);
         }
     }
 }
