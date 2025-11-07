@@ -25,6 +25,10 @@ namespace YourLocalShopMVC.Controllers
             _accountsContext.CustomerAccount.Include(c => c.PaymentDetails);
         }
 
+        public Task<> SeedItems()
+        {
+            return null;
+        }
         private async Task<ShoppingCart?> FindCart()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -227,6 +231,12 @@ namespace YourLocalShopMVC.Controllers
                 return View();
             }
             return RedirectToAction(nameof(Checkout),cart);
+        }
+
+        public async Task<IActionResult> Orders()
+        {
+            //fix
+            return View(_shopContext.Order.FindAsync(User));
         }
     }
 }

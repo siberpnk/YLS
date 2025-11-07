@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.VisualBasic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YourLocalShopMVC.Models
@@ -8,8 +9,8 @@ namespace YourLocalShopMVC.Models
         public int Id { get; set; }
 
         [NotMapped]
-        //TODO: Change to Dictionary
-        public List<Item> OrderedItems { get; set; }
+        [Display(Name = "Items")]
+        public Dictionary<Item, int> OrderedItems { get; set; }
 
         [NotMapped]
         public CustomerAccount Customer { get; set; }
@@ -25,21 +26,24 @@ namespace YourLocalShopMVC.Models
         
         [Required]
         [Column ("DeliveryAddress")]
+        [Display(Name = "Delivery Address")]
         public string? DeliveryAddress { get; set; }
 
         [Required]
+        [Display(Name = "Total Price")]
         [DataType(DataType.Currency), Column(name: "TotalPrice", TypeName = "decimal(18, 2)")]
         public decimal TotalPrice { get; set; }
 
         [Required]
         [Column ("PurchaseTime")]
+        [Display(Name = "Purchased On")]
         [DataType(DataType.DateTime)]
         public DateTime PurchaseTime { get; set; }
 
         public Order()
         {
             ItemIds = new List<int>();
-            OrderedItems = new List<Item>();
+            OrderedItems = new Dictionary<Item, int>();
             Customer = new CustomerAccount();
             PurchaseTime = DateTime.Now;
         }
@@ -50,6 +54,20 @@ namespace YourLocalShopMVC.Models
             ItemIds = cart.ItemKeys;
             DeliveryAddress = customer.DeliveryAddress;
             TotalPrice = cart.TotalCost;
+            OrderedItems = cart.Contents;
+        }
+        
+        public void AddToContents(Item item)
+        {
+            int count;
+            if (OrderedItems.TryGetValue(item, out count))
+            {
+                OrderedItems[item]++;
+            }
+            else
+            {
+                OrderedItems.Add(item, 1);
+            }
         }
     }
 }

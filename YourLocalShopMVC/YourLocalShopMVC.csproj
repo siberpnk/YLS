@@ -35,4 +35,9 @@
     <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Migrations\ShopInventory\20251107050629_updateOrder.cs" />
+    <None Include="Migrations\ShopInventory\20251107050629_updateOrder.Designer.cs" />
+  </ItemGroup>
+
 </Project>
