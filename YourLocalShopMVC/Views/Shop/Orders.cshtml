@@ -11,4 +11,47 @@
 <h1>Previous Orders</h1>
 
 <table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Customer.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PurchaseTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeliveryAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>
+                    @Html.DisplayFor(model => item.Customer.Id)
+                </th>
+                <th>
+                    @Html.DisplayFor(model => item.TotalPrice)
+                </th>
+                <th>
+                    @Html.DisplayFor(model => item.PurchaseTime)
+                </th>
+                <th>
+                    @Html.DisplayFor(model => item.DeliveryAddress)
+                </th>
+                <th>
+                    <a asp-controller="Shop" asp-action="Order" asp-route-id="@item.Id">
+                        @Html.DisplayFor(model => item.Id)
+                    </a>
+                </th>
+            </tr>
+        }
+    </tbody>
 </table>

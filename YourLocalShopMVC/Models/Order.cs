@@ -6,6 +6,7 @@ namespace YourLocalShopMVC.Models
 {
     public class Order
     {
+        [Display(Name = "Order Number")]
         public int Id { get; set; }
 
         [NotMapped]
@@ -50,6 +51,7 @@ namespace YourLocalShopMVC.Models
 
         public void BuildOrder(CustomerAccount customer, ShoppingCart cart)
         {
+            Customer = customer;
             PurchaserId = customer.Id;
             ItemIds = cart.ItemKeys;
             DeliveryAddress = customer.DeliveryAddress;

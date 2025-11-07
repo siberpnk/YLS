@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Policy;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace YourLocalShopMVC.Controllers
 {
@@ -25,10 +26,6 @@ namespace YourLocalShopMVC.Controllers
             _accountsContext.CustomerAccount.Include(c => c.PaymentDetails);
         }
 
-        public Task<> SeedItems()
-        {
-            return null;
-        }
         private async Task<ShoppingCart?> FindCart()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -118,6 +115,7 @@ namespace YourLocalShopMVC.Controllers
             return View();
         }
 
+        [Authorize]
         public async Task<IActionResult> ViewCart()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -139,7 +137,7 @@ namespace YourLocalShopMVC.Controllers
                 return View(cart);
             }
 
-            return View();
+            return View(new ShoppingCart());
         }
 
         public async Task<IActionResult> RemoveItem(int id)
@@ -202,13 +200,7 @@ namespace YourLocalShopMVC.Controllers
         public async Task<IActionResult> Checkout()
         {
             var cart = await FindCart();
-            return View(cart);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Order(ShoppingCart cart)
-        {
-            if(cart == null)
+            if (cart == null)
             {
                 NotFound(cart);
             }
@@ -218,25 +210,77 @@ namespace YourLocalShopMVC.Controllers
                 var user = await GetCurrentUser();
                 var order = new Order();
                 order.BuildOrder(user, cart);
-                cart = new ShoppingCart();
-                user.CartId = cart.Id;
+                order.Customer = user;
+                _shopContext.Update(cart);
+                user.CartId = null;
+
+                foreach(var item in cart.Contents)
+                {
+                    _shopContext.Find<Item>(item.Key.Id).Stock -= item.Value;
+                }
+
 
                 _accountsContext.Update(user);
-                _shopContext.Update(cart);
                 _shopContext.Add(order);
 
                 _accountsContext.SaveChanges();
                 _shopContext.SaveChanges();
 
-                return View();
+            return RedirectToAction(nameof(Order), order);
             }
-            return RedirectToAction(nameof(Checkout),cart);
+            return View();
         }
 
+        public async Task<IActionResult> Order(int id)
+        {
+            var order = _shopContext.Order.Where(x => x.Id == id).First();
+            //reseed contents based on CartId
+            foreach (int itemId in order.ItemIds)
+            {
+                order.AddToContents(await _shopContext.Item.FindAsync(itemId));
+            }
+            return View(order);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Order()
+        {
+            //Order order = _shopContext.Order.ToList().Where<CustomerAccount>(x => x.PurchaserId);
+            var user = GetCurrentUser();
+            var id = user.Result.Id;
+            var order = _shopContext.Order.ToList().Where(x => x.PurchaserId == id).Last();
+            //order.OrderedItems = null;
+
+
+            //reseed contents based on CartId
+            foreach (int itemId in order.ItemIds)
+            {
+                order.AddToContents(await _shopContext.Item.FindAsync(itemId));
+            }
+
+            return View(order);
+        }
+
+        [Authorize]
         public async Task<IActionResult> Orders()
         {
-            //fix
-            return View(_shopContext.Order.FindAsync(User));
+            if (HttpContext.User.IsInRole("Staff"))
+            {
+                var orders = _shopContext.Order.ToList();
+                return View(orders);
+            }
+            else
+            {
+                var user = await GetCurrentUser();
+                if (user == null)
+                {
+                    NotFound(user);
+                }
+
+                var orders = _shopContext.Order.ToList().Where(x => x.PurchaserId == user.Id);
+                return View(orders);
+            }
+            return View();
         }
     }
 }

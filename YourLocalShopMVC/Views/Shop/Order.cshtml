@@ -30,16 +30,16 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.OrderedItems.Keys) {
+@foreach (var item in Model.OrderedItems) {
         <tr>
             <th>
-                @Html.DisplayFor(model => model.OrderedItems.Keys.First().Name)
+                @Html.DisplayFor(model =>  item.Key.Name)
             </th>
             <th>
-                @Html.DisplayFor(model => model.OrderedItems.Keys.First().Price)
+                @Html.DisplayFor(model =>  item.Key.Price)
             </th>
             <th>
-                @Html.DisplayFor(model => model.OrderedItems.Keys.Count)
+                @Html.DisplayFor(model => item.Value)
             </th>
         </tr>
 }

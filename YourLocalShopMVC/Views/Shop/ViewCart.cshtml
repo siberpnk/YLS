@@ -11,7 +11,7 @@
 <h1>Shopping Cart, Total Cost: $ @Model.TotalCost</h1>
 
 <p>
-    @if (SignInManager.IsSignedIn(User))
+    @if (SignInManager.IsSignedIn(User) && Model.ItemKeys.Count > 0)
     {
         <a asp-action="Payment">Checkout</a>
     }
