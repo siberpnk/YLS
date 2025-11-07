@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-YourLocalShopMVC-1694ea22-45f6-4899-88c5-64394e3d33eb</UserSecretsId>
@@ -33,6 +33,11 @@
   <ItemGroup>
     <Folder Include="DataInventory\Migrations\" />
     <Folder Include="Data\Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Migrations\ShopInventory\20251107050629_updateOrder.cs" />
+    <None Include="Migrations\ShopInventory\20251107050629_updateOrder.Designer.cs" />
   </ItemGroup>
 
 </Project>

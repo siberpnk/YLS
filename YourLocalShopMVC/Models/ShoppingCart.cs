@@ -23,8 +23,10 @@ namespace YourLocalShopMVC.Models
 
         public ShoppingCart()
         {
+            Id = 0;
             ItemKeys = new List<int>();
             Contents = new Dictionary<Item, int>();
+            TotalCost = 0;
         }
 
         public void AddToContents (Item item)
@@ -55,14 +57,6 @@ namespace YourLocalShopMVC.Models
             TotalCost += item.Price;
 
             AddToContents(item);
-        }
-
-        public void SeedContents(ShoppingCart cartOther)
-        {
-            if(this != cartOther)
-            {
-
-            }
         }
     }
 }

@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model Order
+@inject SignInManager<IdentityUser> SignInManager
+@inject RoleManager<IdentityRole> RoleManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h1>Order, Total Cost: $ @Model.TotalPrice</h1>
+
+<h2>Delivery Address: @Model.DeliveryAddress</h2>
+
+<h2>Ordered on: @Model.PurchaseTime</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderedItems.Keys.First().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderedItems.Keys.First().Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderedItems.Keys.Count)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.OrderedItems) {
+        <tr>
+            <th>
+                @Html.DisplayFor(model =>  item.Key.Name)
+            </th>
+            <th>
+                @Html.DisplayFor(model =>  item.Key.Price)
+            </th>
+            <th>
+                @Html.DisplayFor(model => item.Value)
+            </th>
+        </tr>
+}
+    </tbody>
+</table>

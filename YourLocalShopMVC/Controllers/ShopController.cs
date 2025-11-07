@@ -5,6 +5,9 @@ using YourLocalShopMVC.Data.Accounts;
 using YourLocalShopMVC.DataInventory;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Policy;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace YourLocalShopMVC.Controllers
 {
@@ -19,6 +22,8 @@ namespace YourLocalShopMVC.Controllers
             _accountsContext = accountsContext;
             _shopContext = shopContext;
             _userManager = userManager;
+
+            _accountsContext.CustomerAccount.Include(c => c.PaymentDetails);
         }
 
         private async Task<ShoppingCart?> FindCart()
@@ -53,6 +58,11 @@ namespace YourLocalShopMVC.Controllers
                 return cart;
             }
             return null;
+        }
+
+        private async Task<CustomerAccount?> GetCurrentUser()
+        {
+                return await _userManager.GetUserAsync(HttpContext.User);
         }
 
         public async Task<IActionResult> AddToCart(int id)
@@ -105,6 +115,7 @@ namespace YourLocalShopMVC.Controllers
             return View();
         }
 
+        [Authorize]
         public async Task<IActionResult> ViewCart()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -126,7 +137,7 @@ namespace YourLocalShopMVC.Controllers
                 return View(cart);
             }
 
-            return View();
+            return View(new ShoppingCart());
         }
 
         public async Task<IActionResult> RemoveItem(int id)
@@ -147,23 +158,128 @@ namespace YourLocalShopMVC.Controllers
             return RedirectToAction(nameof(ViewCart));
         }
 
-        public async Task<IActionResult> Checkout(int id)
+        public async Task<IActionResult> Payment()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Payment(CustomerAccount customer)
+        {
+            if(customer == null)
+            {
+                return NotFound(customer);
+            }
+
+            if(ModelState.IsValid)
+            {
+                var cart = await FindCart();
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                customer.PaymentDetails.CreateCreditCardHash();
+
+
+                if(cart == null)
+                {
+                    return NotFound(cart);
+                }
+
+                if(user == null)
+                {
+                    return NotFound(user);
+                }
+
+                user.PaymentDetails = customer.PaymentDetails;
+
+                _accountsContext.Update(user);
+                await _accountsContext.SaveChangesAsync();
+                return RedirectToAction(nameof(Checkout));
+            }
+            return View(customer);
+        }
+
+        public async Task<IActionResult> Checkout()
         {
             var cart = await FindCart();
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-
-            if(cart == null)
+            if (cart == null)
             {
-                return NotFound(cart);
+                NotFound(cart);
+            }
+            if (ModelState.IsValid)
+            {
+
+                var user = await GetCurrentUser();
+                var order = new Order();
+                order.BuildOrder(user, cart);
+                order.Customer = user;
+                _shopContext.Update(cart);
+                user.CartId = null;
+
+                foreach(var item in cart.Contents)
+                {
+                    _shopContext.Find<Item>(item.Key.Id).Stock -= item.Value;
+                }
+
+
+                _accountsContext.Update(user);
+                _shopContext.Add(order);
+
+                _accountsContext.SaveChanges();
+                _shopContext.SaveChanges();
+
+            return RedirectToAction(nameof(Order), order);
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> Order(int id)
+        {
+            var order = _shopContext.Order.Where(x => x.Id == id).First();
+            //reseed contents based on CartId
+            foreach (int itemId in order.ItemIds)
+            {
+                order.AddToContents(await _shopContext.Item.FindAsync(itemId));
+            }
+            return View(order);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Order()
+        {
+            //Order order = _shopContext.Order.ToList().Where<CustomerAccount>(x => x.PurchaserId);
+            var user = GetCurrentUser();
+            var id = user.Result.Id;
+            var order = _shopContext.Order.ToList().Where(x => x.PurchaserId == id).Last();
+            //order.OrderedItems = null;
+
+
+            //reseed contents based on CartId
+            foreach (int itemId in order.ItemIds)
+            {
+                order.AddToContents(await _shopContext.Item.FindAsync(itemId));
             }
 
-            if(user == null)
+            return View(order);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Orders()
+        {
+            if (HttpContext.User.IsInRole("Staff"))
             {
-                return NotFound(user);
+                var orders = _shopContext.Order.ToList();
+                return View(orders);
             }
+            else
+            {
+                var user = await GetCurrentUser();
+                if (user == null)
+                {
+                    NotFound(user);
+                }
 
-
-
+                var orders = _shopContext.Order.ToList().Where(x => x.PurchaserId == user.Id);
+                return View(orders);
+            }
             return View();
         }
     }

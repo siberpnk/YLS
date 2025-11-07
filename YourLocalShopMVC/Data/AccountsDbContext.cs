@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using YourLocalShopMVC.Models;
 
 namespace YourLocalShopMVC.Data.Accounts
@@ -10,6 +11,7 @@ namespace YourLocalShopMVC.Data.Accounts
         public AccountsDbContext(DbContextOptions<AccountsDbContext> options)
             : base(options)
         {
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -18,6 +20,7 @@ namespace YourLocalShopMVC.Data.Accounts
         }
 
         public DbSet<CustomerAccount> CustomerAccount { get; set; } = default!;
-        public DbSet<StaffAccount> StaffAccount { get; set; } = default!;
+        public DbSet<StaffAccount> StaffAccount { get; set; } = default!;        
+        public DbSet<PaymentDetails> PaymentDetails { get; set; } = default!;
     }
 }

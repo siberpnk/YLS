@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Policy;
 using YourLocalShopMVC.DataInventory;
@@ -7,6 +8,8 @@ namespace YourLocalShopMVC.Models
 {
     public class CustomerAccount : IdentityUser 
     {
+        [Required]
+        [Display(Name = "Delivery Address")]
         public string? DeliveryAddress { get; set; }
         
         [Column ("UserPaymentDetails")]
